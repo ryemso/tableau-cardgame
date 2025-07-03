@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension>
+  <name>Card Matching Game</name>
+  <description>Simple card matching game extension</description>
+  <url>index.html</url>
+  <minApiVersion>1.4</minApiVersion>
+  <extensionType>dashboard</extensionType>
+  <author>
+    <name>전략가 렴님</name>
+  </author>
+  <version>1.0.0</version>
+</extension>
