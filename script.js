@@ -5,6 +5,8 @@ let secondCard = null;
 let lockBoard = false;
 let attempts = 0;
 let matches = 0;
+let timer = 60;
+let timerInterval;
 
 function shuffleCards() {
   const deck = [...emojis, ...emojis];
@@ -12,6 +14,8 @@ function shuffleCards() {
   cards = deck;
   renderBoard();
   resetScore();
+  startTimer();
+  document.getElementById("completion").classList.add("hidden");
 }
 
 function renderBoard() {
@@ -53,6 +57,10 @@ function flipCard() {
     firstCard.classList.add("matched");
     secondCard.classList.add("matched");
     matches++;
+    if (matches === emojis.length) {
+      clearInterval(timerInterval);
+      document.getElementById("completion").classList.remove("hidden");
+    }
     resetTurn();
   } else {
     lockBoard = true;
@@ -79,9 +87,23 @@ function resetScore() {
 function updateScore() {
   document.getElementById("attempts").textContent = attempts;
   document.getElementById("matches").textContent = matches;
+  const remaining = emojis.length - matches;
+  document.getElementById("remaining").textContent = remaining;
 }
 
-// 초기화
+function startTimer() {
+  clearInterval(timerInterval);
+  timer = 60;
+  document.getElementById("timer").textContent = timer;
+  timerInterval = setInterval(() => {
+    timer--;
+    document.getElementById("timer").textContent = timer;
+    if (timer === 0) {
+      clearInterval(timerInterval);
+      lockBoard = true;
+      alert("⏱ 시간이 초과되었습니다!");
+    }
+  }, 1000);
+}
+
 shuffleCards();
-
-
