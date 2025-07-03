@@ -1,45 +1,87 @@
+const emojis = ['🍎', '🍌', '🍓', '🍉', '🍇', '🍍', '🥝', '🍑'];
+let cards = [];
+let firstCard = null;
+let secondCard = null;
+let lockBoard = false;
+let attempts = 0;
+let matches = 0;
 
-const fruits = ["🍎", "🍌", "🍇", "🍓", "🍉", "🍒", "🍑", "🥝", "🍍", "🍊", "🥥", "🍋"];
-const cards = [...fruits, ...fruits].sort(() => Math.random() - 0.5);
-let selected = [];
-let matched = [];
+function shuffleCards() {
+  const deck = [...emojis, ...emojis];
+  deck.sort(() => 0.5 - Math.random());
+  cards = deck;
+  renderBoard();
+  resetScore();
+}
 
-function render() {
+function renderBoard() {
   const board = document.getElementById("game-board");
   board.innerHTML = "";
-  cards.forEach((card, index) => {
-    const div = document.createElement("div");
-    div.className = "card";
-    const isFlipped = matched.includes(index) || selected.includes(index);
-    div.textContent = isFlipped ? card : "❓";
-    div.onclick = () => onCardClick(index);
-    board.appendChild(div);
+  cards.forEach((emoji, index) => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.dataset.emoji = emoji;
+    card.dataset.index = index;
+
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-front">❓</div>
+        <div class="card-back">${emoji}</div>
+      </div>
+    `;
+
+    card.addEventListener("click", flipCard);
+    board.appendChild(card);
   });
 }
 
-function onCardClick(index) {
-  if (selected.includes(index) || matched.includes(index)) return;
-  selected.push(index);
-  if (selected.length === 2) {
-    const [a, b] = selected;
-    if (cards[a] === cards[b]) {
-      matched.push(a, b);
-    }
+function flipCard() {
+  if (lockBoard || this.classList.contains("matched") || this === firstCard) return;
+
+  this.classList.add("flipped");
+
+  if (!firstCard) {
+    firstCard = this;
+    return;
+  }
+
+  secondCard = this;
+  attempts++;
+  updateScore();
+
+  if (firstCard.dataset.emoji === secondCard.dataset.emoji) {
+    firstCard.classList.add("matched");
+    secondCard.classList.add("matched");
+    matches++;
+    resetTurn();
+  } else {
+    lockBoard = true;
     setTimeout(() => {
-      selected = [];
-      render();
+      firstCard.classList.remove("flipped");
+      secondCard.classList.remove("flipped");
+      resetTurn();
     }, 1000);
   }
-  render();
 }
 
-window.onload = render;
-
-function shuffleCards() {
-  selected = [];
-  matched = [];
-  cards.sort(() => Math.random() - 0.5);
-  render();
+function resetTurn() {
+  [firstCard, secondCard] = [null, null];
+  lockBoard = false;
+  updateScore();
 }
+
+function resetScore() {
+  attempts = 0;
+  matches = 0;
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById("attempts").textContent = attempts;
+  document.getElementById("matches").textContent = matches;
+}
+
+// 초기화
+shuffleCards();
 
 
