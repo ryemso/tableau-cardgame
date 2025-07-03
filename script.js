@@ -34,3 +34,12 @@ function onCardClick(index) {
 }
 
 window.onload = render;
+
+function shuffleCards() {
+  selected = [];
+  matched = [];
+  cards.sort(() => Math.random() - 0.5);
+  render();
+}
+
+

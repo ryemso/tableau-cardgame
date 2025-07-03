@@ -2,7 +2,7 @@
 <extension>
   <name>Card Matching Game</name>
   <description>Simple card matching game extension</description>
-  <url>index.html</url>
+  <url>https://ryemso.github.io/tableau-cardgame/</url>
   <minApiVersion>1.4</minApiVersion>
   <extensionType>dashboard</extensionType>
   <author>
