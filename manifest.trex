@@ -9,4 +9,11 @@
     <name>전략가 렴님</name>
   </author>
   <version>1.0.0</version>
-</extension>
+<MinimumVersion>2018.2</MinimumVersion>
+
+  <WebExtension>
+    <!-- 여기를 수정 -->
+    <Url>https://ryemso.github.io/tableau-cardgame/index.html</Url>
+    <AllowCrossDomainAccess>true</AllowCrossDomainAccess>
+  </WebExtension>
+</ExtensionManifest>
