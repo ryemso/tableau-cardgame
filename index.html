@@ -14,13 +14,20 @@
     <div id="timer">80</div>
     <div id="game-board"></div>
     <div class="scoreboard">
-      시도: <span id="attempts">0</span> / 매치: <span id="matches">0</span>
-    </div>
-    <button id="shuffle-btn">게임 시작</button>
-    <div id="overlay" class="overlay hidden">
-      <div class="overlay-content">
-        <h2>🎉 게임 종료!</h2>
-        <button id="restart-btn">다시 시작</button>
-      </div>
-    </div>
+  <div>시도: <span id="attempts">0</span></div>
+  <div>/ 매치: <span id="matches">0</span></div>
+  <div><span id="timer">80</span></div>
+</div>
+
+<div id="game-board" class="board"></div>
+
+<button id="shuffle-btn">게임 시작</button>
+<button id="restart-btn">다시 시작</button>
+
+<div id="overlay" class="overlay hidden">
+  <div class="message">
+    🎉 게임 종료! 🎉<br />
+    <button onclick="shuffleCards()">다시 시작</button>
   </div>
+</div>
+
