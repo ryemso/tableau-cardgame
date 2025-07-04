@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Card Matching Game 6x6</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>🍓 카드 매칭 게임 🍉</h1>
   <div id="scoreboard">
-    <div>시도: <span id="attempts">0</span></div>
-    <div>성공: <span id="matches">0</span></div>
-    <div>남은 시간: <span id="timer">60</span>s</div>
+    <div class="score-item">
+      <div class="score-value" id="attempts">0</div>
+      <div class="score-label">시도</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value" id="matches">0</div>
+      <div class="score-label">성공</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value" id="timer">60</div>
+      <div class="score-label">남은 시간</div>
+    </div>
   </div>
   <button onclick="shuffleCards()">🔀 카드 섞기</button>
   <div id="game-board"></div>
-
   <div id="overlay" class="hidden">
     🎉 게임 완료! 🎉
-    <br/>
     <button onclick="shuffleCards()">다시 시작</button>
   </div>
-
   <script src="script.js"></script>
 </body>
 </html>
