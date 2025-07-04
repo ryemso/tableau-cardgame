@@ -10,19 +10,6 @@ let timeLeft = 80;
 let gameEnded = false;
 
 
-function showAllCardsTemporarily() {
-  const allCards = document.querySelectorAll(".card");
-  allCards.forEach(card => card.classList.add("flipped"));
-
-  lockBoard = true;
-
-  setTimeout(() => {
-    allCards.forEach(card => card.classList.remove("flipped"));
-    lockBoard = false; // 이제 클릭 가능
-  }, 4000);
-}
-
-
 function shuffleCards() {
   const deck = [...emojis.slice(0, 18), ...emojis.slice(0, 18)].sort(() => 0.5 - Math.random());
   cards = deck;
@@ -136,3 +123,16 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("restart-btn").addEventListener("click", shuffleCards);
   shuffleCards();
 });
+
+
+function showAllCardsTemporarily() {
+  const allCards = document.querySelectorAll(".card");
+  lockBoard = true;
+  allCards.forEach(card => card.classList.add("flipped"));
+
+  setTimeout(() => {
+    allCards.forEach(card => card.classList.remove("flipped"));
+    lockBoard = false;
+  }, 4000);
+}
+
