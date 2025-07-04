@@ -16,6 +16,7 @@ function shuffleCards() {
   renderBoard();
   resetScore();
   resetTimer();
+  document.getElementById("overlay").classList.add("hidden");  // ✅ 이 부분 추가!
 }
 
 function renderBoard() {
