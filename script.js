@@ -29,11 +29,12 @@ function shuffleCards() {
 
   gameEnded = false;
   document.getElementById("overlay").classList.add("hidden");
+  
+  renderBoard();
   resetScore();
   resetTurn();
-  renderBoard();
-  startTimer();
   showAllCardsTemporaily();
+  startTimer();
 }
 
 function renderBoard() {
