@@ -14,19 +14,21 @@ function shuffleCards() {
   deck.sort(() => 0.5 - Math.random());
   cards = deck;
 
-  // ✅ 상태 초기화 우선
-  resetScore();
-  resetTimer();
-  resetTurn();
+  // ✅ 오버레이 숨기기, 상태 초기화
+  document.getElementById("overlay").classList.add("hidden");
   gameEnded = false;
 
+  resetScore();
+  resetTurn();
+  resetTimer();
+
   renderBoard();
-  document.getElementById("overlay").classList.add("hidden");
 }
 
 function renderBoard() {
   const board = document.getElementById("game-board");
   board.innerHTML = "";
+
   cards.forEach((emoji, index) => {
     const card = document.createElement("div");
     card.classList.add("card");
@@ -46,7 +48,7 @@ function renderBoard() {
 }
 
 function flipCard() {
-  if (lockBoard || this.classList.contains("matched") || this === firstCard || gameEnded) return;
+  if (lockBoard || gameEnded || this.classList.contains("matched") || this === firstCard) return;
 
   this.classList.add("flipped");
 
@@ -65,9 +67,7 @@ function flipCard() {
     matches++;
     updateScore();
 
-    if (matches === 18) {
-      endGame();
-    }
+    if (matches === 18) endGame();
 
     resetTurn();
   } else {
@@ -120,7 +120,5 @@ function endGame() {
   document.getElementById("overlay").classList.remove("hidden");
 }
 
-// ✅ 게임 시작 시 자동 셔플
-document.addEventListener("DOMContentLoaded", () => {
-  shuffleCards();
-});
+// ✅ 자동 시작
+document.addEventListener("DOMContentLoaded", shuffleCards);
