@@ -20,6 +20,8 @@ function shuffleCards() {
   renderBoard();
   resetScore();
   resetTurn();
+  resetTimer();
+  
   showAllCardsTemporaily();
   
    setTimeout(() => {
