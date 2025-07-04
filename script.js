@@ -1,4 +1,3 @@
-
 const emojis = ['🍎','🍌','🍓','🍉','🍇','🍍','🥝','🍑','🥥','🍒','🍋','🍊','🥭','🫐','🍈','🍐','🍏','🍅'];
 let cards = [];
 let firstCard = null;
@@ -8,20 +7,22 @@ let attempts = 0;
 let matches = 0;
 let timer;
 let timeLeft = 60;
+const totalPairs = 18;
 
 function shuffleCards() {
-  const deck = [...emojis.slice(0, 18), ...emojis.slice(0, 18)];
+  const deck = [...emojis.slice(0, totalPairs), ...emojis.slice(0, totalPairs)];
   deck.sort(() => 0.5 - Math.random());
   cards = deck;
-  renderBoard();
-  resetScore();
-  resetTimer();
-  document.getElementById("overlay").classList.add("hidden");  // ✅ 이 부분 추가!
+
+  resetScore();     // 🎯 점수 초기화
+  resetTimer();     // ⏱ 타이머 초기화
+  renderBoard();    // 🧩 보드 그리기
 }
 
 function renderBoard() {
   const board = document.getElementById("game-board");
   board.innerHTML = "";
+
   cards.forEach((emoji, index) => {
     const card = document.createElement("div");
     card.classList.add("card");
@@ -38,6 +39,8 @@ function renderBoard() {
     card.addEventListener("click", flipCard);
     board.appendChild(card);
   });
+
+  document.getElementById("overlay").classList.add("hidden"); // 🎉 오버레이 숨김
 }
 
 function flipCard() {
@@ -51,6 +54,7 @@ function flipCard() {
   }
 
   secondCard = this;
+  lockBoard = true;
   attempts++;
   updateScore();
 
@@ -59,12 +63,13 @@ function flipCard() {
     secondCard.classList.add("matched");
     matches++;
     updateScore();
-    if (matches === 18) {
+
+    resetTurn();
+
+    if (matches === totalPairs) {
       endGame();
     }
-    resetTurn();
   } else {
-    lockBoard = true;
     setTimeout(() => {
       firstCard.classList.remove("flipped");
       secondCard.classList.remove("flipped");
@@ -76,7 +81,6 @@ function flipCard() {
 function resetTurn() {
   [firstCard, secondCard] = [null, null];
   lockBoard = false;
-  updateScore();
 }
 
 function resetScore() {
@@ -108,5 +112,3 @@ function endGame() {
   clearInterval(timer);
   document.getElementById("overlay").classList.remove("hidden");
 }
-
-shuffleCards();
