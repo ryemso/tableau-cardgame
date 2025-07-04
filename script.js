@@ -57,10 +57,11 @@ function flipCard() {
     firstCard.classList.add("matched");
     secondCard.classList.add("matched");
     matches++;
-    resetTurn();
+    updateScore();
     if (matches === 18) {
       endGame();
     }
+    resetTurn();
   } else {
     lockBoard = true;
     setTimeout(() => {
