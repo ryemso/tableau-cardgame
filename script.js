@@ -7,14 +7,20 @@ let attempts = 0;
 let matches = 0;
 let timer;
 let timeLeft = 60;
+let gameEnded = false;
 
 function shuffleCards() {
   const deck = [...emojis.slice(0, 18), ...emojis.slice(0, 18)];
   deck.sort(() => 0.5 - Math.random());
   cards = deck;
-  renderBoard();
+
+  // ✅ 상태 초기화 우선
   resetScore();
   resetTimer();
+  resetTurn();
+  gameEnded = false;
+
+  renderBoard();
   document.getElementById("overlay").classList.add("hidden");
 }
 
@@ -40,7 +46,7 @@ function renderBoard() {
 }
 
 function flipCard() {
-  if (lockBoard || this.classList.contains("matched") || this === firstCard) return;
+  if (lockBoard || this.classList.contains("matched") || this === firstCard || gameEnded) return;
 
   this.classList.add("flipped");
 
@@ -58,9 +64,11 @@ function flipCard() {
     secondCard.classList.add("matched");
     matches++;
     updateScore();
+
     if (matches === 18) {
       endGame();
     }
+
     resetTurn();
   } else {
     lockBoard = true;
@@ -75,7 +83,6 @@ function flipCard() {
 function resetTurn() {
   [firstCard, secondCard] = [null, null];
   lockBoard = false;
-  updateScore();
 }
 
 function resetScore() {
@@ -94,9 +101,11 @@ function resetTimer() {
   clearInterval(timer);
   timeLeft = 60;
   updateScore();
+
   timer = setInterval(() => {
     timeLeft--;
     document.getElementById("timer").textContent = timeLeft;
+
     if (timeLeft <= 0) {
       clearInterval(timer);
       endGame();
@@ -105,10 +114,13 @@ function resetTimer() {
 }
 
 function endGame() {
+  if (gameEnded) return;
+  gameEnded = true;
   clearInterval(timer);
-  const overlay = document.getElementById("overlay");
-  overlay.classList.remove("hidden");
+  document.getElementById("overlay").classList.remove("hidden");
 }
 
-// 초기 셔플
-shuffleCards();
+// ✅ 게임 시작 시 자동 셔플
+document.addEventListener("DOMContentLoaded", () => {
+  shuffleCards();
+});
