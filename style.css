@@ -117,6 +117,10 @@ button:hover {
   z-index: 100;
 }
 
+.overlay.hidden {
+  display: none;
+}
+
 .overlay .message {
   text-align: center;
   background: #fff;
