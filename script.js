@@ -75,6 +75,7 @@ function flipCard() {
 function resetTurn() {
   [firstCard, secondCard] = [null, null];
   lockBoard = false;
+  updateScore();
 }
 
 function resetScore() {
@@ -86,12 +87,13 @@ function resetScore() {
 function updateScore() {
   document.getElementById("attempts").textContent = attempts;
   document.getElementById("matches").textContent = matches;
+  document.getElementById("timer").textContent = timeLeft;
 }
 
 function resetTimer() {
   clearInterval(timer);
   timeLeft = 60;
-  document.getElementById("timer").textContent = timeLeft;
+  updateScore();
   timer = setInterval(() => {
     timeLeft--;
     document.getElementById("timer").textContent = timeLeft;
@@ -104,7 +106,9 @@ function resetTimer() {
 
 function endGame() {
   clearInterval(timer);
-  document.getElementById("overlay").classList.remove("hidden");
+  const overlay = document.getElementById("overlay");
+  overlay.classList.remove("hidden");
 }
 
+// 초기 셔플
 shuffleCards();
