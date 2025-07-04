@@ -10,19 +10,15 @@ let timeLeft = 60;
 let gameEnded = false;
 
 function shuffleCards() {
-  const deck = [...emojis.slice(0, 18), ...emojis.slice(0, 18)];
-  deck.sort(() => 0.5 - Math.random());
+  const deck = [...emojis.slice(0, 18), ...emojis.slice(0, 18)].sort(() => 0.5 - Math.random());
   cards = deck;
 
-  // ✅ 오버레이 숨기기, 상태 초기화
-  document.getElementById("overlay").classList.add("hidden");
   gameEnded = false;
-
+  document.getElementById("overlay").classList.add("hidden");
   resetScore();
   resetTurn();
-  resetTimer();
-
   renderBoard();
+  startTimer();
 }
 
 function renderBoard() {
@@ -67,8 +63,7 @@ function flipCard() {
     matches++;
     updateScore();
 
-    if (matches === 18) endGame();
-
+    if (matches === 18) finishGame();
     resetTurn();
   } else {
     lockBoard = true;
@@ -97,7 +92,7 @@ function updateScore() {
   document.getElementById("timer").textContent = timeLeft;
 }
 
-function resetTimer() {
+function startTimer() {
   clearInterval(timer);
   timeLeft = 60;
   updateScore();
@@ -108,21 +103,20 @@ function resetTimer() {
 
     if (timeLeft <= 0) {
       clearInterval(timer);
-      endGame();
+      finishGame();
     }
   }, 1000);
 }
 
-function endGame() {
+function finishGame() {
   if (gameEnded) return;
-
-  // 게임이 종료 조건을 만족할 때만 오버레이 보여주기
-  if (matches === 18 || timeLeft <= 0) {
-    gameEnded = true;
-    clearInterval(timer);
-    document.getElementById("overlay").classList.remove("hidden");
-  }
+  gameEnded = true;
+  clearInterval(timer);
+  document.getElementById("overlay").classList.remove("hidden");
 }
 
-// ✅ 자동 시작
-document.addEventListener("DOMContentLoaded", shuffleCards);
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("shuffle-btn").addEventListener("click", shuffleCards);
+  document.getElementById("restart-btn").addEventListener("click", shuffleCards);
+  shuffleCards();
+});
