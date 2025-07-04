@@ -38,7 +38,7 @@ button {
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #DDEEF3;
 }
 
 .board {
@@ -87,7 +87,7 @@ button:hover {
 }
 
 .card-back {
-  background-color: #6EABC1; /#ffe8cc;
+  background-color: #ffe8cc;
   transform: rotateY(180deg);
   border: 2px solid #fcbf49;
 }
