@@ -19,16 +19,15 @@ function shuffleCards() {
   resetScore();
   resetTimer();
 
-  // 1. 잠깐 비동기 딜레이 줘야 렌더링 후 flip 적용됨
   setTimeout(() => {
     showAllCardsTemporarily();
 
-    // 2. 타이머는 4초 후 시작
     setTimeout(() => {
-      startTimer();
+      startTimer(); // 타이머는 카드가 뒤집힌 후 시작
     }, 4000);
-  }, 50); // 렌더링 이후 DOM 반영을 기다림
+  }, 50);
 }
+
 
 function renderBoard() {
   const board = document.getElementById("game-board");
