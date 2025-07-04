@@ -9,7 +9,7 @@ body {
 h1 {
   font-size: 2rem;
   margin-bottom: 10px;
-  color: #2c3e50;  /* 예: 다크 네이비, 재목*/
+  color: #2c3e50; !important; /* 예: 다크 네이비, 재목*/
 }
 
 .scoreboard {
@@ -18,13 +18,13 @@ h1 {
   gap: 2rem;
   margin-bottom: 10px;
   font-size: 1.2rem;
-  color: #2c3e50; /* 점수*/
+  color: #2c3e50; !important; /* 점수*/
 }
 
 .scoreboard div span {
   font-weight: bold;
   font-size: 1.8rem;
-  color: #2c3e50; /*점수*/
+  color: #2c3e50; !important; /*점수*/
 }
 
 button {
