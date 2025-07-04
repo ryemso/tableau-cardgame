@@ -21,7 +21,10 @@ function shuffleCards() {
   resetScore();
   resetTurn();
   showAllCardsTemporaily();
-  startTimer();
+  
+   setTimeout(() => {
+    startTimer();      // ⏱ 타이머 시작!
+  }, 4000); 
 }
 
 function renderBoard() {
