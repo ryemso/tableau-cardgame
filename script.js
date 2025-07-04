@@ -115,9 +115,13 @@ function resetTimer() {
 
 function endGame() {
   if (gameEnded) return;
-  gameEnded = true;
-  clearInterval(timer);
-  document.getElementById("overlay").classList.remove("hidden");
+
+  // 게임이 종료 조건을 만족할 때만 오버레이 보여주기
+  if (matches === 18 || timeLeft <= 0) {
+    gameEnded = true;
+    clearInterval(timer);
+    document.getElementById("overlay").classList.remove("hidden");
+  }
 }
 
 // ✅ 자동 시작
