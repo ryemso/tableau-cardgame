@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<html lang="ko">
-<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🍎카드 매칭 게임🍎</title>
@@ -11,23 +9,27 @@
 </head>
 <body>
   <div class="container">
-    <div id="timer">80</div>
-    <div id="game-board"></div>
+    <h1>🍎 카드 매칭 게임 🍉</h1>
+
     <div class="scoreboard">
-  <div>시도: <span id="attempts">0</span></div>
-  <div>/ 매치: <span id="matches">0</span></div>
-  <div><span id="timer">80</span></div>
-</div>
+      <div>시도: <span id="attempts">0</span></div>
+      <div>/ 매치: <span id="matches">0</span></div>
+      <div>남은 시간: <span id="timer">80</span></div>
+    </div>
 
-<div id="game-board" class="board"></div>
+    <button id="shuffle-btn">게임 시작</button>
+    <button id="restart-btn">다시 시작</button>
 
-<button id="shuffle-btn">게임 시작</button>
-<button id="restart-btn">다시 시작</button>
+    <div id="game-board" class="board"></div>
 
-<div id="overlay" class="overlay hidden">
-  <div class="message">
-    🎉 게임 종료! 🎉<br />
-    <button onclick="shuffleCards()">다시 시작</button>
+    <div id="overlay" class="overlay hidden">
+      <div class="message">
+        🎉 게임 종료! 🎉<br />
+        <button onclick="shuffleCards()">다시 시작</button>
+      </div>
+    </div>
   </div>
-</div>
 
+  <script src="script.js"></script>
+</body>
+</html>
