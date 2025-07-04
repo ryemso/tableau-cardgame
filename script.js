@@ -1,21 +1,21 @@
-const emojis = ['🍎', '🍌', '🍓', '🍉', '🍇', '🍍', '🥝', '🍑', '🍒', '🍋', '🍏', '🍈', '🍊', '🥥', '🍐', '🍅', '🌽', '🥕'];
+
+const emojis = ['🍎','🍌','🍓','🍉','🍇','🍍','🥝','🍑','🥥','🍒','🍋','🍊','🥭','🫐','🍈','🍐','🍏','🍅'];
 let cards = [];
 let firstCard = null;
 let secondCard = null;
 let lockBoard = false;
 let attempts = 0;
 let matches = 0;
-let timer = 60;
-let timerInterval;
+let timer;
+let timeLeft = 60;
 
 function shuffleCards() {
-  const deck = [...emojis, ...emojis];
+  const deck = [...emojis.slice(0, 18), ...emojis.slice(0, 18)];
   deck.sort(() => 0.5 - Math.random());
   cards = deck;
   renderBoard();
   resetScore();
-  startTimer();
-  document.getElementById("completion").classList.add("hidden");
+  resetTimer();
 }
 
 function renderBoard() {
@@ -57,11 +57,10 @@ function flipCard() {
     firstCard.classList.add("matched");
     secondCard.classList.add("matched");
     matches++;
-    if (matches === emojis.length) {
-      clearInterval(timerInterval);
-      document.getElementById("completion").classList.remove("hidden");
-    }
     resetTurn();
+    if (matches === 18) {
+      endGame();
+    }
   } else {
     lockBoard = true;
     setTimeout(() => {
@@ -87,23 +86,25 @@ function resetScore() {
 function updateScore() {
   document.getElementById("attempts").textContent = attempts;
   document.getElementById("matches").textContent = matches;
-  const remaining = emojis.length - matches;
-  document.getElementById("remaining").textContent = remaining;
 }
 
-function startTimer() {
-  clearInterval(timerInterval);
-  timer = 60;
-  document.getElementById("timer").textContent = timer;
-  timerInterval = setInterval(() => {
-    timer--;
-    document.getElementById("timer").textContent = timer;
-    if (timer === 0) {
-      clearInterval(timerInterval);
-      lockBoard = true;
-      alert("⏱ 시간이 초과되었습니다!");
+function resetTimer() {
+  clearInterval(timer);
+  timeLeft = 60;
+  document.getElementById("timer").textContent = timeLeft;
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById("timer").textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      endGame();
     }
   }, 1000);
+}
+
+function endGame() {
+  clearInterval(timer);
+  document.getElementById("overlay").classList.remove("hidden");
 }
 
 shuffleCards();
