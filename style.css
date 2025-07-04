@@ -87,7 +87,7 @@ button:hover {
 }
 
 .card-back {
-  background-color: #ffe8cc;
+  background-color: #6EABC1; /#ffe8cc;
   transform: rotateY(180deg);
   border: 2px solid #fcbf49;
 }
