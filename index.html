@@ -1,33 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Card Matching Game 6x6</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🍓 카드 매칭 게임 🍉</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>🍓 카드 매칭 게임 🍉</h1>
-  <div id="scoreboard">
-    <div class="score-item">
-      <div class="score-value" id="attempts">0</div>
-      <div class="score-label">시도</div>
-    </div>
-    <div class="score-item">
-      <div class="score-value" id="matches">0</div>
-      <div class="score-label">성공</div>
-    </div>
-    <div class="score-item">
-      <div class="score-value" id="timer">60</div>
-      <div class="score-label">남은 시간</div>
+
+  <div class="scoreboard">
+    <div><span id="attempts">0</span><br><small>시도</small></div>
+    <div><span id="matches">0</span><br><small>성공</small></div>
+    <div><span id="timer">60</span><br><small>남은 시간</small></div>
+  </div>
+
+  <button id="shuffle-btn" onclick="shuffleCards()">🔀 카드 섞기</button>
+
+  <div id="game-board" class="board"></div>
+
+  <div id="overlay" class="overlay hidden">
+    <div class="message">
+      🎉 게임 완료! 🎉
+      <button onclick="shuffleCards()">다시 시작</button>
     </div>
   </div>
-  <button onclick="shuffleCards()">🔀 카드 섞기</button>
-  <div id="game-board"></div>
-  <div id="overlay" class="hidden">
-    🎉 게임 완료! 🎉
-    <button onclick="shuffleCards()">다시 시작</button>
-  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
