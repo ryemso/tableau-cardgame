@@ -11,22 +11,23 @@ let gameEnded = false;
 
 
 function shuffleCards() {
-  const deck = [...emojis.slice(0, 18), ...emojis.slice(0, 18)].sort(() => 0.5 - Math.random());
+  const deck = [...emojis.slice(0, 18), ...emojis.slice(0, 18)];
+  deck.sort(() => 0.5 - Math.random());
   cards = deck;
 
-  gameEnded = false;
-  document.getElementById("overlay").classList.add("hidden");
-  
   renderBoard();
   resetScore();
-  resetTurn();
   resetTimer();
-  
-  showAllCardsTemporaily();
-  
-   setTimeout(() => {
-    startTimer();      // ⏱ 타이머 시작!
-  }, 4000); 
+
+  // 1. 잠깐 비동기 딜레이 줘야 렌더링 후 flip 적용됨
+  setTimeout(() => {
+    showAllCardsTemporarily();
+
+    // 2. 타이머는 4초 후 시작
+    setTimeout(() => {
+      startTimer();
+    }, 4000);
+  }, 50); // 렌더링 이후 DOM 반영을 기다림
 }
 
 function renderBoard() {
@@ -131,13 +132,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 function showAllCardsTemporarily() {
-  const allCards = document.querySelectorAll(".card");
   lockBoard = true;
+  const allCards = document.querySelectorAll(".card");
   allCards.forEach(card => card.classList.add("flipped"));
 
   setTimeout(() => {
     allCards.forEach(card => card.classList.remove("flipped"));
     lockBoard = false;
-  }, 4000);
+  }, 4000); // 4초 보여주기
 }
 
