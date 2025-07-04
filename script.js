@@ -126,13 +126,20 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("shuffle-btn").addEventListener("click", shuffleCards);
   document.getElementById("restart-btn").addEventListener("click", shuffleCards);
 
-  // 첫 시작 시, shuffleCards는 DOM이 완전히 렌더된 뒤 실행
-  setTimeout(shuffleCards, 200);
+  // ✅ 최초 실행은 DOM 렌더 완료 후 시점에 정확하게 실행
+  setTimeout(() => {
+    shuffleCards();
+  }, 200);
 });
 
 
 function showAllCardsTemporarily(callback) {
   const allCards = document.querySelectorAll(".card");
+  if (allCards.length === 0) {
+    console.warn("❗ 카드가 렌더되지 않았습니다.");
+    return;
+  }
+
   allCards.forEach(card => card.classList.add("flipped"));
   lockBoard = true;
 
