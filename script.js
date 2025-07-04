@@ -19,13 +19,12 @@ function shuffleCards() {
   resetScore();
   resetTimer();
 
+  // DOM이 다 렌더링되고 나서 실행되도록 보장
   setTimeout(() => {
-    showAllCardsTemporarily();
-
-    setTimeout(() => {
-      startTimer(); // 타이머는 카드가 뒤집힌 후 시작
-    }, 4000);
-  }, 50);
+    showAllCardsTemporarily(() => {
+      startTimer(); // 카드가 4초 보여진 후 타이머 시작
+    });
+  }, 100); // 짧은 딜레이로 DOM 반영 완료 기다림
 }
 
 
@@ -126,18 +125,21 @@ function finishGame() {
 window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("shuffle-btn").addEventListener("click", shuffleCards);
   document.getElementById("restart-btn").addEventListener("click", shuffleCards);
-  shuffleCards();
+
+  // 첫 시작 시, shuffleCards는 DOM이 완전히 렌더된 뒤 실행
+  setTimeout(shuffleCards, 200);
 });
 
 
-function showAllCardsTemporarily() {
-  lockBoard = true;
+function showAllCardsTemporarily(callback) {
   const allCards = document.querySelectorAll(".card");
   allCards.forEach(card => card.classList.add("flipped"));
+  lockBoard = true;
 
   setTimeout(() => {
     allCards.forEach(card => card.classList.remove("flipped"));
     lockBoard = false;
-  }, 4000); // 4초 보여주기
+    if (typeof callback === "function") callback();
+  }, 4000);
 }
 
