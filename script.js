@@ -14,6 +14,8 @@ function showAllCardsTemporarily() {
   const allCards = document.querySelectorAll(".card");
   allCards.forEach(card => card.classList.add("flipped"));
 
+  lockBoard = true;
+
   setTimeout(() => {
     allCards.forEach(card => card.classList.remove("flipped"));
     lockBoard = false; // 이제 클릭 가능
