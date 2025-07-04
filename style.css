@@ -58,6 +58,10 @@ body {
   font-size: 18px;
 }
 
+.hidden {
+  display: none;
+}
+
 #overlay {
   position: fixed;
   top: 0;
@@ -73,6 +77,4 @@ body {
   z-index: 1000;
 }
 
-.hidden {
-  display: none;
-}
+
