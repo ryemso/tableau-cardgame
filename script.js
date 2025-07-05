@@ -10,13 +10,16 @@ let timeLeft = 80;
 let gameEnded = false;
 
 function shuffleCards(useFixed = false) {
-  const board = document.getElementById("game-board");  // ✅ 선언
-  const baseEmojis = useFixed ? emojis.slice(0, 9) : emojis.slice(0, 18);
+  const board = document.getElementById("game-board");
+  
+  const baseEmojis = useFixed ? emojis.slice(0, 9) : emojis.slice(0, 18);  // 3x3 또는 6x6
   const deck = [...baseEmojis, ...baseEmojis];
   if (!useFixed) deck.sort(() => 0.5 - Math.random());
 
   cards = deck;
-  renderBoard(useFixed);  // ✅ 수정됨
+
+  renderBoard(useFixed); // ✅ 고정 여부 넘김
+
   resetScore();
   resetTimer();
 
@@ -30,7 +33,7 @@ function shuffleCards(useFixed = false) {
 function renderBoard(isFixed = false) {
   const board = document.getElementById("game-board");
   board.innerHTML = "";
-  board.className = isFixed ? "board board-3x3" : "board board-6x6";
+  board.className = isFixed ? "board board-3x3" : "board board-6x6"; // ✅ 클래스 지정
 
   cards.forEach((emoji, index) => {
     const card = document.createElement("div");
@@ -44,6 +47,7 @@ function renderBoard(isFixed = false) {
         <div class="card-back">${emoji}</div>
       </div>
     `;
+
     card.addEventListener("click", flipCard);
     board.appendChild(card);
   });
