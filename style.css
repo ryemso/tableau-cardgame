@@ -51,7 +51,6 @@ button:hover {
 }
 
 .board {
-  display: grid;
   grid-template-columns: repeat(6, 60px);
   grid-gap: 10px;
   justify-content: center;
