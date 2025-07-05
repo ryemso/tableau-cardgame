@@ -1,15 +1,24 @@
 body {
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: 'Noto Sans KR', sans-serif;
   background-color: #70a9b6;
   text-align: center;
-  padding: 30px;
-  color: #333;
+  padding: 20px;
+  color: #222;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+.stats {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
 }
 
 button {
   margin: 10px;
-  padding: 10px 20px;
-  font-size: 1.2rem;
+  padding: 12px 20px;
+  font-size: 1.1rem;
   cursor: pointer;
   border: none;
   border-radius: 6px;
@@ -19,37 +28,36 @@ button {
 }
 
 button:hover {
-  background-color: #DDEEF3;
-  color: #333;
+  background-color: #45a049;
 }
 
 #game-board {
   display: grid;
+  gap: 10px;
   justify-content: center;
-  gap: 12px;
   margin-top: 30px;
 }
 
 .board-6x6 {
-  grid-template-columns: repeat(6, 70px);
+  grid-template-columns: repeat(6, 80px);
 }
 
 .board-3x3 {
-  grid-template-columns: repeat(4, 70px); /* 4쌍이므로 4칸이 맞습니다 */
+  grid-template-columns: repeat(3, 80px);
 }
 
 .card {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   perspective: 1000px;
 }
 
 .card-inner {
+  position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.4s;
   transform-style: preserve-3d;
-  position: relative;
+  transition: transform 0.4s;
 }
 
 .card.flipped .card-inner {
@@ -62,41 +70,36 @@ button:hover {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  font-size: 2rem;
+  border-radius: 8px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  font-size: 2rem;
   background-color: white;
-  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .card-front {
-  background-color: white;
+  color: #e74c3c;
 }
 
 .card-back {
   transform: rotateY(180deg);
-  background-color: #fefefe;
 }
 
-.card.matched {
-  background-color: #c7ffd8 !important;
-  pointer-events: none;
+.matched .card-inner {
+  transform: rotateY(180deg);
+  box-shadow: 0 0 0 2px #4CAF50 inset;
 }
 
 #game-over {
+  margin-top: 30px;
+  font-size: 1.8rem;
   display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(50, 50, 50, 0.8);
-  color: white;
-  font-size: 2rem;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 10;
+  color: #fff;
 }
-/*주석*/
+
+#game-over button {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+}
