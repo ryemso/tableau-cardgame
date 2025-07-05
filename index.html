@@ -2,30 +2,32 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>카드 매칭 게임</title>
+  <title>🍎 카드 매칭 게임 🍉</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
 </head>
 <body>
-
   <h1>🍎 카드 매칭 게임 🍉</h1>
-  <div class="stats">
-    시도: <span id="attempts">0</span> /
-    매치: <span id="matches">0</span> /
+
+  <div class="scoreboard">
+    시도: <span id="score">0</span> /
+    매치: <span id="match">0</span> /
     남은 시간: <span id="time">90</span>
   </div>
 
-  <div>
-    <button onclick="startGame()">게임 시작</button>
-    <button onclick="resetGame()">다시 시작</button>
-    <button onclick="startFixedGame()">발표용 고정 게임</button>
+  <div class="button-group">
+    <button id="start">게임 시작</button>
+    <button id="fixed">발표용 시작</button>
+    <button id="restart">다시 시작</button>
   </div>
 
-  <div id="game-board" class="board-6x6"></div>
+  <div id="game-board" class="board board-6x6"></div>
 
-  <div id="game-over">
-    🎉 게임 종료! 🎉<br />
-    <button onclick="resetGame()">다시 시작</button>
+  <div id="game-over" class="overlay hidden">
+    <div class="message">
+      🎉 게임 종료 🎉<br />
+      <button id="restart2">다시 시작</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
