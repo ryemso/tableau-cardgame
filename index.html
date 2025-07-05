@@ -3,34 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🍎 카드 매칭 게임</title>
+  <title>카드 매칭 게임</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <div class="container">
-    <h1>🍎 카드 매칭 게임 🍉</h1>
 
-    <div class="scoreboard">
-      <div>시도: <span id="attempts">0</span></div>
-      <div>/ 매치: <span id="matches">0</span></div>
-      <div>남은 시간: <span id="timer">80</span></div>
-    </div>
+  <h1>🍎 카드 매칭 게임 🍉</h1>
+  <div class="stats">
+    시도: <span id="attempts">0</span> /
+    매치: <span id="matches">0</span> /
+    남은 시간: <span id="time">90</span>
+  </div>
 
-    <div class="button-group">
-      <button id="shuffle-btn">게임 시작</button>
-      <button id="restart-btn">다시 시작</button>
-      <button id="shuffle-fixed-btn">발표용 고정 게임</button>
-    </div>
+  <div>
+    <button onclick="startGame()">게임 시작</button>
+    <button onclick="resetGame()">다시 시작</button>
+    <button onclick="startFixedGame()">발표용 고정 게임</button>
+  </div>
 
-    <div id="game-board" class="board board-6x6"></div>
+  <div id="game-board" class="board-6x6"></div>
 
-    <div id="overlay" class="overlay hidden">
-      <div class="message">
-        🎉 게임 종료! 🎉<br />
-        <button id="overlay-restart-btn">다시 시작</button>
-      </div>
-    </div>
+  <div id="game-over">
+    🎉 게임 종료! 🎉<br />
+    <button onclick="resetGame()">다시 시작</button>
   </div>
 
   <script src="script.js"></script>
