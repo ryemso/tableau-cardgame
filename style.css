@@ -61,6 +61,7 @@ button:hover {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
+  justify-content: center;
 }
 
 .board-3x3 {
