@@ -16,22 +16,24 @@ h1 {
   font-size: 1.2rem;
 }
 
+/* 기본 보드 스타일 */
 .board {
+  display: grid;
+  gap: 10px;
   justify-content: center;
-  margin: 20px auto;
+  margin: 30px auto;
 }
 
-/* ✅ 동적으로 설정되는 클래스 */
+/* 6x6용 */
 .board-6x6 {
-  display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
+  width: fit-content;
 }
 
+/* ✅ 발표용: 3x3 고정용 */
 .board-3x3 {
-  display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  width: fit-content;
 }
 
 /* 카드 디자인 */
