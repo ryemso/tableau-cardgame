@@ -11,7 +11,7 @@ let gameEnded = false;
 let totalMatches = 18;
 
 function shuffleCards(useFixed = false) {
-  const baseEmojis = useFixed ? emojis.slice(0, 9) : emojis.slice(0, 18);  // ✅ 발표용은 3x3용 9개
+  const baseEmojis = useFixed ? emojis.slice(0, 3) : emojis.slice(0, 18);  // ✅ 발표용은 3x3용 9개
   const deck = [...baseEmojis, ...baseEmojis];
   if (!useFixed) deck.sort(() => 0.5 - Math.random());
 
@@ -76,7 +76,10 @@ function flipCard() {
     matches++;
     updateScore();
 
-    if (matches === totalMatcjes) finishGame(); // ✅ 3x3 or 6x6 자동 감지
+    if (matches === totalMatches && totalMatches > 0) {
+      setTimeout(finishGame, 300);
+    }
+
     resetTurn();
   } else {
     lockBoard = true;
@@ -86,7 +89,6 @@ function flipCard() {
       resetTurn();
     }, 1000);
   }
-}
 
 function resetTurn() {
   [firstCard, secondCard] = [null, null];
