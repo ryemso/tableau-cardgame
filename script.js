@@ -157,3 +157,4 @@ document.getElementById("shuffle-fixed-btn").addEventListener("click", () => {
   hideOverlay();
   shuffleCards(true);
 });
+});
