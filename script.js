@@ -1,113 +1,144 @@
-/**/
-const emojis = ['🍎', '🍌', '🍇', '🍓', '🍍', '🥝', '🍑', '🍉'];
-let shuffledCards = [];
+// 게임 관련 변수 초기화
 let firstCard, secondCard;
+let hasFlippedCard = false;
 let lockBoard = false;
 let matches = 0;
 let attempts = 0;
+let totalMatches = 0;
 let timer;
 let timeLeft = 90;
-let totalMatches = 8;
+let gameStarted = false;
+let isPresentationMode = false;
+
+const emojis = [
+  "🍎", "🍌", "🍓", "🍉", "🍇", "🍍", "🥝", "🍑"
+];
+
+const gameBoard = document.getElementById("game-board");
+const startBtn = document.getElementById("start-btn");
+const restartBtn = document.getElementById("restart-btn");
+const fixedBtn = document.getElementById("fixed-btn");
+const result = document.getElementById("result");
+const timerDisplay = document.getElementById("timer");
+const attemptsDisplay = document.getElementById("attempts");
+const matchesDisplay = document.getElementById("matches");
 
 function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
 
-function createBoard(cards) {
-  const board = document.getElementById("game-board");
-  board.innerHTML = "";
-  cards.forEach((emoji, index) => {
+function startGame(presentationMode = false) {
+  gameStarted = true;
+  isPresentationMode = presentationMode;
+  firstCard = null;
+  secondCard = null;
+  hasFlippedCard = false;
+  lockBoard = false;
+  matches = 0;
+  attempts = 0;
+  timeLeft = 90;
+  totalMatches = 8; // 4x4
+  gameBoard.innerHTML = "";
+  result.style.display = "none";
+  updateScore();
+
+  const selectedEmojis = [...emojis];
+  const gameEmojis = shuffle([...selectedEmojis, ...selectedEmojis]);
+
+  if (!presentationMode) shuffle(gameEmojis);
+
+  gameEmojis.forEach((emoji, index) => {
     const card = document.createElement("div");
     card.classList.add("card");
     card.dataset.emoji = emoji;
-    card.innerHTML = "<span class='card-back'>❓</span><span class='card-front'>" + emoji + "</span>";
+    card.innerHTML = `<div class="card-inner">
+      <div class="card-front">${emoji}</div>
+      <div class="card-back">?</div>
+    </div>`;
     card.addEventListener("click", flipCard);
-    board.appendChild(card);
+    gameBoard.appendChild(card);
   });
-}
 
-function startGame() {
-  resetGame();
-  shuffledCards = shuffle([...emojis, ...emojis]);
-  createBoard(shuffledCards);
-  revealCardsTemporarily();
-  startTimer();
-}
+  setTimeout(() => {
+    document.querySelectorAll(".card").forEach(card => {
+      card.classList.add("flipped");
+    });
+    setTimeout(() => {
+      document.querySelectorAll(".card").forEach(card => {
+        card.classList.remove("flipped");
+      });
+    }, 1500);
+  }, 300);
 
-function startFixedGame() {
-  resetGame();
-  // ✅ 발표용도 무작위로 섞되 같은 이모지 구성
-  shuffledCards = shuffle([...emojis, ...emojis]);
-  createBoard(shuffledCards);
-  revealCardsTemporarily();
-  startTimer();
-}
-
-function restartGame() {
   clearInterval(timer);
-  document.getElementById("game-message").innerText = "";
-  startGame();
+  timer = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      finishGame();
+    }
+  }, 1000);
 }
 
 function flipCard() {
-  if (lockBoard || this.classList.contains("matched") || this.classList.contains("flipped")) return;
+  if (lockBoard || this.classList.contains("flipped") || this.classList.contains("matched")) return;
 
   this.classList.add("flipped");
 
-  if (!firstCard) {
+  if (!hasFlippedCard) {
+    hasFlippedCard = true;
     firstCard = this;
     return;
   }
 
   secondCard = this;
+  lockBoard = true;
   attempts++;
-  updateStats();
+  updateScore();
 
   if (firstCard.dataset.emoji === secondCard.dataset.emoji) {
     firstCard.classList.add("matched");
     secondCard.classList.add("matched");
     matches++;
-    updateStats();
-    resetTurn();
-
-    if (matches === totalMatches) finishGame();
+    resetBoard();
+    updateScore();
+    if (matches === totalMatches) {
+      clearInterval(timer);
+      finishGame();
+    }
   } else {
-    lockBoard = true;
     setTimeout(() => {
       firstCard.classList.remove("flipped");
       secondCard.classList.remove("flipped");
-      resetTurn();
-    }, 800);
+      resetBoard();
+    }, 1000);
   }
 }
 
-function resetTurn() {
+function resetBoard() {
+  [hasFlippedCard, lockBoard] = [false, false];
   [firstCard, secondCard] = [null, null];
-  lockBoard = false;
 }
 
-function updateStats() {
-  document.getElementById("attempts").innerText = attempts;
-  document.getElementById("matches").innerText = matches;
+function updateScore() {
+  attemptsDisplay.textContent = attempts;
+  matchesDisplay.textContent = matches;
 }
 
-function revealCardsTemporarily() {
-  const cards = document.querySelectorAll(".card");
-  cards.forEach(card => card.classList.add("flipped"));
-  setTimeout(() => cards.forEach(card => card.classList.remove("flipped")), 4000);
-}
-
-function startTimer() {
-  timeLeft = 90;
-  document.getElementById("timer").innerText = timeLeft;
-  timer = setInterval(() => {
-    timeLeft--;
-    document.getElementById("timer").innerText = timeLeft;
-    if (timeLeft === 0) finishGame();
-  }, 1000);
+function updateTimer() {
+  timerDisplay.textContent = timeLeft;
 }
 
 function finishGame() {
-  clearInterval(timer);
-  document.getElementById("game-message").innerHTML = "🎉 게임 종료! 🎉";
+  result.style.display = "block";
+  result.innerHTML = "🎉 게임 종료! 🎉";
 }
+
+startBtn.addEventListener("click", () => startGame(false));
+fixedBtn.addEventListener("click", () => startGame(true));
+restartBtn.addEventListener("click", () => startGame(isPresentationMode));
