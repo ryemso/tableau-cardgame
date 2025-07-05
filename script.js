@@ -13,7 +13,7 @@ let totalPairs = 18; // ✅ 쌍 개수 설정
 function shuffleCards(useFixed = false) {
   const board = document.getElementById("game-board");
 
-  const baseEmojis = useFixed ? emojis.slice(0, 3) : emojis.slice(0, 18); // ✅ 3쌍 vs 18쌍
+  const baseEmojis = useFixed ? emojis.slice(0, 9) : emojis.slice(0, 18); // ✅ 3쌍 vs 18쌍
   const deck = [...baseEmojis, ...baseEmojis];
   if (!useFixed) deck.sort(() => 0.5 - Math.random());
 
