@@ -43,11 +43,26 @@ button:hover {
   background-color: #DDEEF3;
 }
 
+.button-group {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
 .board {
   display: grid;
   grid-template-columns: repeat(6, 60px);
   grid-gap: 10px;
   justify-content: center;
+}
+
+.board-6x6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.board-3x3 {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .card {
