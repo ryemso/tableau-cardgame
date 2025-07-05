@@ -1,131 +1,112 @@
-const cardSymbols = [
-    '🍎', '🍌', '🍓', '🍉', '🍇', '🍍', '🥝', '🍑'
-];
-
-const startButton = document.getElementById('startButton');
-const fixedButton = document.getElementById('fixedButton');
-const restartButton = document.getElementById('restartButton');
-const gameBoard = document.getElementById('gameBoard');
-const attemptsDisplay = document.getElementById('attempts');
-const matchesDisplay = document.getElementById('matches');
-const timerDisplay = document.getElementById('timer');
-const gameOverMessage = document.getElementById('gameOver');
-const restartOverlayButton = document.getElementById('restartOverlayButton');
-
-let cards = [];
-let firstCard = null;
-let secondCard = null;
-let attempts = 0;
+const emojis = ['🍎', '🍌', '🍇', '🍓', '🍍', '🥝', '🍑', '🍉'];
+let shuffledCards = [];
+let firstCard, secondCard;
+let lockBoard = false;
 let matches = 0;
+let attempts = 0;
 let timer;
 let timeLeft = 90;
-let isGameStarted = false;
+let totalMatches = 8;
 
-function createCard(symbol) {
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.innerHTML = '<span class="symbol">?</span>';
-    card.dataset.symbol = symbol;
-    card.addEventListener('click', () => flipCard(card));
-    return card;
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
 }
 
-function startGame(fixed = false) {
-    gameBoard.innerHTML = '';
-    cards = [];
-    firstCard = null;
-    secondCard = null;
-    attempts = 0;
-    matches = 0;
-    timeLeft = 90;
-    isGameStarted = true;
-    updateDisplay();
-    gameOverMessage.classList.add('hidden');
+function createBoard(cards) {
+  const board = document.getElementById("game-board");
+  board.innerHTML = "";
+  cards.forEach((emoji, index) => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.dataset.emoji = emoji;
+    card.innerHTML = "<span class='card-back'>❓</span><span class='card-front'>" + emoji + "</span>";
+    card.addEventListener("click", flipCard);
+    board.appendChild(card);
+  });
+}
 
-    let selectedSymbols = [...cardSymbols];
-    let selected = selectedSymbols.slice(0, 8);
-    let gameSymbols = [...selected, ...selected];
-    if (!fixed) shuffleArray(gameSymbols);
+function startGame() {
+  resetGame();
+  shuffledCards = shuffle([...emojis, ...emojis]);
+  createBoard(shuffledCards);
+  revealCardsTemporarily();
+  startTimer();
+}
 
-    gameSymbols.forEach(symbol => {
-        const card = createCard(symbol);
-        cards.push(card);
-        gameBoard.appendChild(card);
-    });
+function startFixedGame() {
+  resetGame();
+  // ✅ 발표용도 무작위로 섞되 같은 이모지 구성
+  shuffledCards = shuffle([...emojis, ...emojis]);
+  createBoard(shuffledCards);
+  revealCardsTemporarily();
+  startTimer();
+}
 
+function restartGame() {
+  clearInterval(timer);
+  document.getElementById("game-message").innerText = "";
+  startGame();
+}
+
+function flipCard() {
+  if (lockBoard || this.classList.contains("matched") || this.classList.contains("flipped")) return;
+
+  this.classList.add("flipped");
+
+  if (!firstCard) {
+    firstCard = this;
+    return;
+  }
+
+  secondCard = this;
+  attempts++;
+  updateStats();
+
+  if (firstCard.dataset.emoji === secondCard.dataset.emoji) {
+    firstCard.classList.add("matched");
+    secondCard.classList.add("matched");
+    matches++;
+    updateStats();
+    resetTurn();
+
+    if (matches === totalMatches) finishGame();
+  } else {
+    lockBoard = true;
     setTimeout(() => {
-        cards.forEach(card => card.querySelector('.symbol').textContent = '?');
-        cards.forEach(card => card.classList.remove('flipped'));
-    }, 4000);
-
-    cards.forEach(card => {
-        card.querySelector('.symbol').textContent = card.dataset.symbol;
-        card.classList.add('flipped');
-    });
-
-    clearInterval(timer);
-    timer = setInterval(() => {
-        timeLeft--;
-        updateDisplay();
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            endGame();
-        }
-    }, 1000);
+      firstCard.classList.remove("flipped");
+      secondCard.classList.remove("flipped");
+      resetTurn();
+    }, 800);
+  }
 }
 
-function updateDisplay() {
-    attemptsDisplay.textContent = attempts;
-    matchesDisplay.textContent = matches;
-    timerDisplay.textContent = timeLeft;
+function resetTurn() {
+  [firstCard, secondCard] = [null, null];
+  lockBoard = false;
 }
 
-function flipCard(card) {
-    if (!isGameStarted || card.classList.contains('flipped') || secondCard) return;
-
-    card.querySelector('.symbol').textContent = card.dataset.symbol;
-    card.classList.add('flipped');
-
-    if (!firstCard) {
-        firstCard = card;
-    } else {
-        secondCard = card;
-        attempts++;
-        updateDisplay();
-
-        if (firstCard.dataset.symbol === secondCard.dataset.symbol) {
-            matches++;
-            updateDisplay();
-            firstCard = null;
-            secondCard = null;
-            if (matches === 8) endGame();
-        } else {
-            setTimeout(() => {
-                firstCard.querySelector('.symbol').textContent = '?';
-                secondCard.querySelector('.symbol').textContent = '?';
-                firstCard.classList.remove('flipped');
-                secondCard.classList.remove('flipped');
-                firstCard = null;
-                secondCard = null;
-            }, 700);
-        }
-    }
+function updateStats() {
+  document.getElementById("attempts").innerText = attempts;
+  document.getElementById("matches").innerText = matches;
 }
 
-function endGame() {
-    isGameStarted = false;
-    gameOverMessage.classList.remove('hidden');
-    clearInterval(timer);
+function revealCardsTemporarily() {
+  const cards = document.querySelectorAll(".card");
+  cards.forEach(card => card.classList.add("flipped"));
+  setTimeout(() => cards.forEach(card => card.classList.remove("flipped")), 4000);
 }
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
+function startTimer() {
+  timeLeft = 90;
+  document.getElementById("timer").innerText = timeLeft;
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById("timer").innerText = timeLeft;
+    if (timeLeft === 0) finishGame();
+  }, 1000);
 }
 
-startButton.addEventListener('click', () => startGame(false));
-fixedButton.addEventListener('click', () => startGame(false)); // 랜덤으로 변경
-restartButton.addEventListener('click', () => startGame(false));
-restartOverlayButton.addEventListener('click', () => startGame(false));
+function finishGame() {
+  clearInterval(timer);
+  document.getElementById("game-message").innerHTML = "🎉 게임 종료! 🎉";
+}
