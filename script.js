@@ -72,7 +72,7 @@ function startGame(presentationMode = false) {
     card.classList.add("card");
     card.dataset.emoji = emoji;
     card.innerHTML = `<div class="card-inner">
-  <div class="card-front">'❓'</div>
+  <div class="card-front">❓</div>
   <div class="card-back">${emoji}</div>
 </div>`;
     card.addEventListener("click", flipCard);
