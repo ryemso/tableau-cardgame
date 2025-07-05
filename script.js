@@ -33,6 +33,7 @@ function renderBoard(isFixed = false) {
   board.innerHTML = "";
 
   board.classList.remove("board-6x6", "board-3x3");
+  board.classList.add("board");
   board.classList.add(isFixed ? "board-3x3" : "board-6x6");
 
   cards.forEach((emoji, index) => {
