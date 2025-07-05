@@ -1,58 +1,63 @@
-const emojis = ["🍎", "🍊", "🍌", "🍉", "🍇", "🍓", "🍒", "🥝", "🍍", "🥑", "🧀", "🥕", "🍅", "🍋", "🌽", "🥥", "🍐", "🥬"];
-let firstCard, secondCard;
+const emojis = ['🍎','🍌','🍓','🍉','🍇','🍍','🥝','🍑','🥥','🍒','🍋','🍊','🥭','🧀','🍈','🍐','🍏','🍅'];
+let cards = [];
+let firstCard = null;
+let secondCard = null;
 let lockBoard = false;
-let matches = 0;
 let attempts = 0;
-let totalMatches = 0;
-let gameStarted = false;
-let countdown;
+let matches = 0;
+let timer;
 let timeLeft = 90;
+let gameEnded = false;
 let isFixedMode = false;
+let totalMatches = 0;
 
-const board = document.getElementById("game-board");
-const scoreDisplay = document.getElementById("score");
-const matchDisplay = document.getElementById("match");
-const timeDisplay = document.getElementById("time");
-const gameOverScreen = document.getElementById("game-over");
-const restartButton = document.getElementById("restart");
+function shuffleCards(useFixed = false) {
+  const board = document.getElementById("game-board");
+  const baseEmojis = useFixed ? emojis.slice(0, 9) : emojis.slice(0, 18);
+  const deck = [...baseEmojis, ...baseEmojis];
+  if (!useFixed) deck.sort(() => 0.5 - Math.random());
 
-function shuffle(array) {
-  let currentIndex = array.length;
-  while (currentIndex !== 0) {
-    let randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-  }
-  return array;
+  cards = deck;
+  isFixedMode = useFixed;
+  totalMatches = baseEmojis.length;
+  renderBoard();
+  resetScore();
+  resetTimer();
+  hideOverlay();
+
+  setTimeout(() => {
+    showAllCardsTemporarily(() => {
+      startTimer();
+    });
+  }, 100);
 }
 
-function createCard(emoji) {
-  const card = document.createElement("div");
-  card.classList.add("card");
-  card.dataset.emoji = emoji;
+function renderBoard() {
+  const board = document.getElementById("game-board");
+  board.innerHTML = "";
+  board.classList.remove("board-6x6", "board-3x3");
+  board.classList.add(isFixedMode ? "board-3x3" : "board-6x6");
 
-  const inner = document.createElement("div");
-  inner.classList.add("card-inner");
+  cards.forEach((emoji, index) => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.dataset.emoji = emoji;
+    card.dataset.index = index;
 
-  const front = document.createElement("div");
-  front.classList.add("card-front");
-  front.textContent = "?";
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-front">❓</div>
+        <div class="card-back">${emoji}</div>
+      </div>
+    `;
 
-  const back = document.createElement("div");
-  back.classList.add("card-back");
-  back.textContent = emoji;
-
-  inner.appendChild(front);
-  inner.appendChild(back);
-  card.appendChild(inner);
-
-  card.addEventListener("click", handleCardClick);
-  return card;
+    card.addEventListener("click", flipCard);
+    board.appendChild(card);
+  });
 }
 
-function handleCardClick() {
-  if (lockBoard || this.classList.contains("flipped") || this.classList.contains("matched")) return;
-
+function flipCard() {
+  if (lockBoard || gameEnded || this.classList.contains("matched") || this === firstCard) return;
   this.classList.add("flipped");
 
   if (!firstCard) {
@@ -69,15 +74,16 @@ function handleCardClick() {
     secondCard.classList.add("matched");
     matches++;
     updateScore();
-    resetTurn();
+
     if (matches === totalMatches) finishGame();
+    resetTurn();
   } else {
     lockBoard = true;
     setTimeout(() => {
       firstCard.classList.remove("flipped");
       secondCard.classList.remove("flipped");
       resetTurn();
-    }, 800);
+    }, 1000);
   }
 }
 
@@ -86,57 +92,66 @@ function resetTurn() {
   lockBoard = false;
 }
 
-function updateScore() {
-  scoreDisplay.textContent = attempts;
-  matchDisplay.textContent = matches;
+function resetScore() {
+  attempts = 0;
+  matches = 0;
+  updateScore();
 }
 
-function startGame(isFixed = false) {
-  isFixedMode = isFixed;
-  board.innerHTML = "";
-  matches = 0;
-  attempts = 0;
-  updateScore();
+function updateScore() {
+  document.getElementById("score").textContent = attempts;
+  document.getElementById("match").textContent = matches;
+  document.getElementById("time").textContent = timeLeft;
+}
+
+function resetTimer() {
+  clearInterval(timer);
   timeLeft = 90;
-  timeDisplay.textContent = timeLeft;
-  gameOverScreen.classList.remove("show");
-
-  const pairCount = isFixed ? 4 : 9;
-  const selected = isFixed ? emojis.slice(0, 4) : shuffle(emojis).slice(0, pairCount);
-  const cards = shuffle([...selected, ...selected]);
-
-  totalMatches = pairCount;
-
-  board.className = "";
-  board.classList.add(isFixed ? "board-3x3" : "board-6x6");
-
-  cards.forEach(emoji => board.appendChild(createCard(emoji)));
-
-  const allCards = document.querySelectorAll(".card");
-  allCards.forEach(card => card.classList.add("flipped"));
-
-  setTimeout(() => {
-    allCards.forEach(card => card.classList.remove("flipped"));
-    startTimer();
-    gameStarted = true;
-  }, 4000); // ✅ 4초 동안 카드 미리 보여주기
+  updateScore();
 }
 
 function startTimer() {
-  clearInterval(countdown);
-  countdown = setInterval(() => {
+  clearInterval(timer);
+  updateScore();
+
+  timer = setInterval(() => {
     timeLeft--;
-    timeDisplay.textContent = timeLeft;
-    if (timeLeft <= 0) finishGame();
+    document.getElementById("time").textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      finishGame();
+    }
   }, 1000);
 }
 
 function finishGame() {
-  clearInterval(countdown);
-  gameOverScreen.classList.add("show");
+  if (gameEnded) return;
+  gameEnded = true;
+  clearInterval(timer);
+  document.getElementById("game-over").classList.remove("hidden");
 }
 
-document.getElementById("start").addEventListener("click", () => startGame(false));
-document.getElementById("fixed").addEventListener("click", () => startGame(true));
-document.getElementById("restart").addEventListener("click", () => startGame(isFixedMode));
-document.getElementById("restart2").addEventListener("click", () => startGame(isFixedMode));
+function hideOverlay() {
+  document.getElementById("game-over").classList.add("hidden");
+  gameEnded = false;
+}
+
+function showAllCardsTemporarily(callback) {
+  const allCards = document.querySelectorAll(".card");
+  allCards.forEach(card => card.classList.add("flipped"));
+  lockBoard = true;
+
+  setTimeout(() => {
+    allCards.forEach(card => card.classList.remove("flipped"));
+    lockBoard = false;
+    if (typeof callback === "function") callback();
+  }, 4000);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("start").addEventListener("click", () => shuffleCards(false));
+  document.getElementById("fixed").addEventListener("click", () => shuffleCards(true));
+  document.getElementById("restart").addEventListener("click", () => shuffleCards(isFixedMode));
+  document.getElementById("restart2").addEventListener("click", () => shuffleCards(isFixedMode));
+});
