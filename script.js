@@ -6,24 +6,25 @@ let lockBoard = false;
 let attempts = 0;
 let matches = 0;
 let timer;
-let timeLeft = 120;
+let timeLeft = 80;
 let gameEnded = false;
 
-function shuffleCards() {
-  const deck = [...emojis.slice(0, 18), ...emojis.slice(0, 18)];
-  deck.sort(() => 0.5 - Math.random());
-  cards = deck;
+function shuffleCards(useFixed = false) {
+  const baseEmojis = emojis.slice(0, 18);
+  const deck = useFixed
+    ? [...baseEmojis, ...baseEmojis] // 고정된 순서
+    : [...baseEmojis, ...baseEmojis].sort(() => 0.5 - Math.random());
 
+  cards = deck;
   renderBoard();
   resetScore();
   resetTimer();
 
-  // DOM 그려진 후 카드 전체 보여주기 → 타이머 시작
   setTimeout(() => {
     showAllCardsTemporarily(() => {
       startTimer();
     });
-  }, 100); // DOM 반영 기다리는 짧은 딜레이
+  }, 100);
 }
 
 function renderBoard() {
@@ -98,7 +99,7 @@ function updateScore() {
 
 function resetTimer() {
   clearInterval(timer);
-  timeLeft = 120;
+  timeLeft = 80;
   updateScore();
 }
 
@@ -124,6 +125,11 @@ function finishGame() {
   document.getElementById("overlay").classList.remove("hidden");
 }
 
+function hideOverlay() {
+  document.getElementById("overlay").classList.add("hidden");
+  gameEnded = false;
+}
+
 function showAllCardsTemporarily(callback) {
   const allCards = document.querySelectorAll(".card");
   allCards.forEach(card => card.classList.add("flipped"));
@@ -142,10 +148,15 @@ window.addEventListener("DOMContentLoaded", () => {
     shuffleCards();
   });
 
-  document.getElementById("restart-btn").addEventListener("click", () => {
-    gameEnded = false;
-    shuffleCards();
-  });
-
-  shuffleCards(); // 자동 실행 시 사용
+ document.getElementById("shuffle-btn").addEventListener("click", () => {
+  hideOverlay();
+  shuffleCards();
+});
+document.getElementById("restart-btn").addEventListener("click", () => {
+  hideOverlay();
+  shuffleCards();
+});
+document.getElementById("shuffle-fixed-btn").addEventListener("click", () => {
+  hideOverlay();
+  shuffleCards(true);
 });
