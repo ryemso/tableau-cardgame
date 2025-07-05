@@ -145,13 +145,10 @@ function showAllCardsTemporarily(callback) {
 window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("shuffle-btn").addEventListener("click", () => {
     gameEnded = false;
+    hideOverlay();
     shuffleCards();
   });
 
- document.getElementById("shuffle-btn").addEventListener("click", () => {
-  hideOverlay();
-  shuffleCards();
-});
 document.getElementById("restart-btn").addEventListener("click", () => {
   hideOverlay();
   shuffleCards();
