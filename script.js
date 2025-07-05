@@ -8,18 +8,15 @@ let matches = 0;
 let timer;
 let timeLeft = 80;
 let gameEnded = false;
-let totalPairs = 18; // ✅ 쌍 개수 설정
 
 function shuffleCards(useFixed = false) {
-  const board = document.getElementById("game-board");
-
-  const baseEmojis = useFixed ? emojis.slice(0, 9) : emojis.slice(0, 18); // ✅ 3쌍 vs 18쌍
+  const baseEmojis = useFixed ? emojis.slice(0, 9) : emojis.slice(0, 18);  // ✅ 발표용은 3x3용 9개
   const deck = [...baseEmojis, ...baseEmojis];
   if (!useFixed) deck.sort(() => 0.5 - Math.random());
 
   cards = deck;
-  totalPairs = baseEmojis.length; // ✅ 쌍 개수 재설정
-  renderBoard(useFixed);
+
+  renderBoard(useFixed); // ✅ 고정 모드 여부 전달
 
   resetScore();
   resetTimer();
@@ -76,7 +73,7 @@ function flipCard() {
     matches++;
     updateScore();
 
-    if (matches === totalPairs) finishGame(); // ✅ 쌍 개수로 체크
+    if (matches === cards.length / 2) finishGame(); // ✅ 3x3 or 6x6 자동 감지
     resetTurn();
   } else {
     lockBoard = true;
@@ -163,7 +160,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("shuffle-fixed-btn").addEventListener("click", () => {
     hideOverlay();
-    shuffleCards(true); // ✅ 발표용
+    shuffleCards(true);
   });
 
   document.getElementById("overlay-restart-btn").addEventListener("click", () => {
