@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🍎 카드 매칭 게임 🍉</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
-  <style>
-    body {
+  body {
       font-family: 'Noto Sans KR', sans-serif;
       background-color: #72b1c4;
       text-align: center;
@@ -128,29 +120,3 @@
       font-size: 1.2rem;
       padding: 15px 30px;
     }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>🍎 카드 매칭 게임 🍉</h1>
-    <div id="game-info">
-      시도: <span id="attempts">0</span> /
-      매치: <span id="matches">0</span> /
-      남은 시간: <span id="timer">90</span>
-    </div>
-    <!-- ✅ 버튼 정렬용 그룹 -->
-    <div class="button-group">
-      <button id="shuffle-btn">게임 시작</button>
-      <button id="restart-btn">다시 시작</button>
-      <button id="shuffle-fixed-btn">발표용</button>
-    </div>
-    <!-- ✅ 게임판 -->
-    <div id="game-board" class="board"></div>
-    <!-- ✅ 게임 종료 오버레이 -->
-    <div id="overlay" class="overlay hidden">
-      <div class="message">
-        🎉 게임 종료! 🎉<br />
-        <button id="overlay-restart-btn">다시 시작</button>
-      </div>
-    </div>
-  </div>
