@@ -148,13 +148,16 @@ window.addEventListener("DOMContentLoaded", () => {
     hideOverlay();
     shuffleCards();
   });
-
-document.getElementById("restart-btn").addEventListener("click", () => {
+  document.getElementById("overlay-restart-btn").addEventListener("click", () => {
   hideOverlay();
-  shuffleCards();
-});
-document.getElementById("shuffle-fixed-btn").addEventListener("click", () => {
-  hideOverlay();
-  shuffleCards(true);
-});
+  shuffleCards(); // 기본은 랜덤 카드 시작
+  });
+  document.getElementById("restart-btn").addEventListener("click", () => {
+    hideOverlay();
+    shuffleCards();
+  });
+  document.getElementById("shuffle-fixed-btn").addEventListener("click", () => {
+    hideOverlay();
+    shuffleCards(true);
+  });
 });
