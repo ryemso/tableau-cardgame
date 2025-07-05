@@ -58,11 +58,16 @@ button:hover {
 }
 
 .board-6x6 {
+  display: grid;
   grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
 }
 
 .board-3x3 {
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  justify-content: center;
 }
 
 .card {
