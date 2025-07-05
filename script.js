@@ -1,157 +1,131 @@
-const emojis = ['🍎','🍌','🍓','🍉','🍇','🍍','🥝','🍑','🥥','🍒','🍋','🍊','🥭','🧀','🍈','🍐','🍏','🍅'];
+const cardSymbols = [
+    '🍎', '🍌', '🍓', '🍉', '🍇', '🍍', '🥝', '🍑'
+];
+
+const startButton = document.getElementById('startButton');
+const fixedButton = document.getElementById('fixedButton');
+const restartButton = document.getElementById('restartButton');
+const gameBoard = document.getElementById('gameBoard');
+const attemptsDisplay = document.getElementById('attempts');
+const matchesDisplay = document.getElementById('matches');
+const timerDisplay = document.getElementById('timer');
+const gameOverMessage = document.getElementById('gameOver');
+const restartOverlayButton = document.getElementById('restartOverlayButton');
+
 let cards = [];
 let firstCard = null;
 let secondCard = null;
-let lockBoard = false;
 let attempts = 0;
 let matches = 0;
 let timer;
 let timeLeft = 90;
-let gameEnded = false;
-let isFixedMode = false;
-let totalMatches = 0;
+let isGameStarted = false;
 
-function shuffleCards(useFixed = false) {
-  const board = document.getElementById("game-board");
-  const baseEmojis = useFixed ? emojis.slice(0, 8) : emojis.slice(0, 18);  // ✅ 4x4 = 8쌍
-  const deck = [...baseEmojis, ...baseEmojis];
-  if (!useFixed) deck.sort(() => 0.5 - Math.random());
+function createCard(symbol) {
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.innerHTML = '<span class="symbol">?</span>';
+    card.dataset.symbol = symbol;
+    card.addEventListener('click', () => flipCard(card));
+    return card;
+}
 
-  cards = deck;
-  isFixedMode = useFixed;
-  totalMatches = baseEmojis.length;
-  renderBoard();
-  resetScore();
-  resetTimer();
-  hideOverlay();
+function startGame(fixed = false) {
+    gameBoard.innerHTML = '';
+    cards = [];
+    firstCard = null;
+    secondCard = null;
+    attempts = 0;
+    matches = 0;
+    timeLeft = 90;
+    isGameStarted = true;
+    updateDisplay();
+    gameOverMessage.classList.add('hidden');
 
-  setTimeout(() => {
-    showAllCardsTemporarily(() => {
-      startTimer();
+    let selectedSymbols = [...cardSymbols];
+    let selected = selectedSymbols.slice(0, 8);
+    let gameSymbols = [...selected, ...selected];
+    if (!fixed) shuffleArray(gameSymbols);
+
+    gameSymbols.forEach(symbol => {
+        const card = createCard(symbol);
+        cards.push(card);
+        gameBoard.appendChild(card);
     });
-  }, 100);
-}
 
-function renderBoard() {
-  const board = document.getElementById("game-board");
-  board.innerHTML = "";
-  board.classList.remove("board-6x6", "board-3x3", "board-4x4");
-  board.classList.add(isFixedMode ? "board-4x4" : "board-6x6");
-
-  cards.forEach((emoji, index) => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.dataset.emoji = emoji;
-    card.dataset.index = index;
-
-    card.innerHTML = `
-      <div class="card-inner">
-        <div class="card-front">❓</div>
-        <div class="card-back">${emoji}</div>
-      </div>
-    `;
-
-    card.addEventListener("click", flipCard);
-    board.appendChild(card);
-  });
-}
-
-function flipCard() {
-  if (lockBoard || gameEnded || this.classList.contains("matched") || this === firstCard) return;
-  this.classList.add("flipped");
-
-  if (!firstCard) {
-    firstCard = this;
-    return;
-  }
-
-  secondCard = this;
-  attempts++;
-  updateScore();
-
-  if (firstCard.dataset.emoji === secondCard.dataset.emoji) {
-    firstCard.classList.add("matched");
-    secondCard.classList.add("matched");
-    matches++;
-    updateScore();
-
-    if (matches === totalMatches) finishGame();
-    resetTurn();
-  } else {
-    lockBoard = true;
     setTimeout(() => {
-      firstCard.classList.remove("flipped");
-      secondCard.classList.remove("flipped");
-      resetTurn();
+        cards.forEach(card => card.querySelector('.symbol').textContent = '?');
+        cards.forEach(card => card.classList.remove('flipped'));
+    }, 4000);
+
+    cards.forEach(card => {
+        card.querySelector('.symbol').textContent = card.dataset.symbol;
+        card.classList.add('flipped');
+    });
+
+    clearInterval(timer);
+    timer = setInterval(() => {
+        timeLeft--;
+        updateDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            endGame();
+        }
     }, 1000);
-  }
 }
 
-function resetTurn() {
-  [firstCard, secondCard] = [null, null];
-  lockBoard = false;
+function updateDisplay() {
+    attemptsDisplay.textContent = attempts;
+    matchesDisplay.textContent = matches;
+    timerDisplay.textContent = timeLeft;
 }
 
-function resetScore() {
-  attempts = 0;
-  matches = 0;
-  updateScore();
-}
+function flipCard(card) {
+    if (!isGameStarted || card.classList.contains('flipped') || secondCard) return;
 
-function updateScore() {
-  document.getElementById("score").textContent = attempts;
-  document.getElementById("match").textContent = matches;
-  document.getElementById("time").textContent = timeLeft;
-}
+    card.querySelector('.symbol').textContent = card.dataset.symbol;
+    card.classList.add('flipped');
 
-function resetTimer() {
-  clearInterval(timer);
-  timeLeft = 90;
-  updateScore();
-}
+    if (!firstCard) {
+        firstCard = card;
+    } else {
+        secondCard = card;
+        attempts++;
+        updateDisplay();
 
-function startTimer() {
-  clearInterval(timer);
-  updateScore();
-
-  timer = setInterval(() => {
-    timeLeft--;
-    document.getElementById("time").textContent = timeLeft;
-
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      finishGame();
+        if (firstCard.dataset.symbol === secondCard.dataset.symbol) {
+            matches++;
+            updateDisplay();
+            firstCard = null;
+            secondCard = null;
+            if (matches === 8) endGame();
+        } else {
+            setTimeout(() => {
+                firstCard.querySelector('.symbol').textContent = '?';
+                secondCard.querySelector('.symbol').textContent = '?';
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
+                firstCard = null;
+                secondCard = null;
+            }, 700);
+        }
     }
-  }, 1000);
 }
 
-function finishGame() {
-  if (gameEnded) return;
-  gameEnded = true;
-  clearInterval(timer);
-  document.getElementById("game-over").classList.remove("hidden");
+function endGame() {
+    isGameStarted = false;
+    gameOverMessage.classList.remove('hidden');
+    clearInterval(timer);
 }
 
-function hideOverlay() {
-  document.getElementById("game-over").classList.add("hidden");
-  gameEnded = false;
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
-function showAllCardsTemporarily(callback) {
-  const allCards = document.querySelectorAll(".card");
-  allCards.forEach(card => card.classList.add("flipped"));
-  lockBoard = true;
-
-  setTimeout(() => {
-    allCards.forEach(card => card.classList.remove("flipped"));
-    lockBoard = false;
-    if (typeof callback === "function") callback();
-  }, 4000);
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("start").addEventListener("click", () => shuffleCards(false));
-  document.getElementById("fixed").addEventListener("click", () => shuffleCards(true));
-  document.getElementById("restart").addEventListener("click", () => shuffleCards(isFixedMode));
-  document.getElementById("restart2").addEventListener("click", () => shuffleCards(isFixedMode));
-});
+startButton.addEventListener('click', () => startGame(false));
+fixedButton.addEventListener('click', () => startGame(false)); // 랜덤으로 변경
+restartButton.addEventListener('click', () => startGame(false));
+restartOverlayButton.addEventListener('click', () => startGame(false));
