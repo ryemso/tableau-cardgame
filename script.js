@@ -6,7 +6,7 @@ let lockBoard = false;
 let attempts = 0;
 let matches = 0;
 let timer;
-let timeLeft = 80;
+let timeLeft = 120;
 let gameEnded = false;
 
 function shuffleCards() {
@@ -98,7 +98,7 @@ function updateScore() {
 
 function resetTimer() {
   clearInterval(timer);
-  timeLeft = 80;
+  timeLeft = 120;
   updateScore();
 }
 
