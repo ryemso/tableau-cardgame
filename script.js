@@ -13,7 +13,7 @@ let totalMatches = 0;
 
 function shuffleCards(useFixed = false) {
   const board = document.getElementById("game-board");
-  const baseEmojis = useFixed ? emojis.slice(0, 9) : emojis.slice(0, 18);
+  const baseEmojis = useFixed ? emojis.slice(0, 8) : emojis.slice(0, 18);  // ✅ 4x4 = 8쌍
   const deck = [...baseEmojis, ...baseEmojis];
   if (!useFixed) deck.sort(() => 0.5 - Math.random());
 
@@ -35,8 +35,8 @@ function shuffleCards(useFixed = false) {
 function renderBoard() {
   const board = document.getElementById("game-board");
   board.innerHTML = "";
-  board.classList.remove("board-6x6", "board-3x3");
-  board.classList.add(isFixedMode ? "board-3x3" : "board-6x6");
+  board.classList.remove("board-6x6", "board-3x3", "board-4x4");
+  board.classList.add(isFixedMode ? "board-4x4" : "board-6x6");
 
   cards.forEach((emoji, index) => {
     const card = document.createElement("div");
