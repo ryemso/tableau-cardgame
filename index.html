@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🍎카드 매칭 게임🍎</title>
+  <title>🍎카드 매칭 게임🍉</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
 </head>
@@ -17,16 +17,16 @@
       <div>남은 시간: <span id="timer">80</span></div>
     </div>
 
+    <div id="game-board" class="board"></div>
+
     <button id="shuffle-btn">게임 시작</button>
     <button id="restart-btn">다시 시작</button>
     <button id="shuffle-fixed-btn">고정된 카드 시작</button>
-    
-    <div id="game-board" class="board"></div>
 
     <div id="overlay" class="overlay hidden">
       <div class="message">
         🎉 게임 종료! 🎉<br />
-        <button onclick="shuffleCards()">다시 시작</button>
+        <button id="overlay-restart-btn">다시 시작</button>
       </div>
     </div>
   </div>
