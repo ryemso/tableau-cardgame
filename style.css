@@ -40,7 +40,7 @@ button:hover {
 }
 
 .board-3x3 {
-  grid-template-columns: repeat(3, 80px);
+  grid-template-columns: repeat(4, 80px);
 }
 
 .board-6x6 {
