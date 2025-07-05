@@ -33,6 +33,8 @@ function shuffleCards(useFixed = false) {
 function renderBoard() {
   const board = document.getElementById("game-board");
   board.innerHTML = "";
+  board.className = isFixed ? "board board-3x3" : "board board-6x6";
+  
   cards.forEach((emoji, index) => {
     const card = document.createElement("div");
     card.classList.add("card");
