@@ -8,17 +8,18 @@ let matches = 0;
 let timer;
 let timeLeft = 80;
 let gameEnded = false;
+let totalPairs = 18; // ✅ 쌍 개수 설정
 
 function shuffleCards(useFixed = false) {
   const board = document.getElementById("game-board");
-  
-  const baseEmojis = useFixed ? emojis.slice(0, 9) : emojis.slice(0, 18);  // 3x3 또는 6x6
+
+  const baseEmojis = useFixed ? emojis.slice(0, 3) : emojis.slice(0, 18); // ✅ 3쌍 vs 18쌍
   const deck = [...baseEmojis, ...baseEmojis];
   if (!useFixed) deck.sort(() => 0.5 - Math.random());
 
   cards = deck;
-
-  renderBoard(useFixed); // ✅ 고정 여부 넘김
+  totalPairs = baseEmojis.length; // ✅ 쌍 개수 재설정
+  renderBoard(useFixed);
 
   resetScore();
   resetTimer();
@@ -33,7 +34,7 @@ function shuffleCards(useFixed = false) {
 function renderBoard(isFixed = false) {
   const board = document.getElementById("game-board");
   board.innerHTML = "";
-  board.className = isFixed ? "board board-3x3" : "board board-6x6"; // ✅ 클래스 지정
+  board.className = isFixed ? "board board-3x3" : "board board-6x6";
 
   cards.forEach((emoji, index) => {
     const card = document.createElement("div");
@@ -73,7 +74,7 @@ function flipCard() {
     matches++;
     updateScore();
 
-    if (matches === 18) finishGame();
+    if (matches === totalPairs) finishGame(); // ✅ 쌍 개수로 체크
     resetTurn();
   } else {
     lockBoard = true;
@@ -160,7 +161,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("shuffle-fixed-btn").addEventListener("click", () => {
     hideOverlay();
-    shuffleCards(true);
+    shuffleCards(true); // ✅ 발표용
   });
 
   document.getElementById("overlay-restart-btn").addEventListener("click", () => {
@@ -168,4 +169,3 @@ window.addEventListener("DOMContentLoaded", () => {
     shuffleCards();
   });
 });
-
