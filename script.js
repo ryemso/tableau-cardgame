@@ -1,64 +1,49 @@
-const emojisPool = ["🍎", "🍇", "🍉", "🍌", "🍑", "🍒", "🍍", "🥝", "🍐", "🍊", "🍓", "🥥"];
+// ✅ script.js (완성)
+
+const emojis = ['🍎','🍌','🍓','🍉','🍇','🍍','🥝','🍑','🥥','🍒','🍋','🍊','🥭','🧀','🍈','🍐','🍏','🍅'];
 let cards = [];
-let firstCard, secondCard;
+let firstCard = null;
+let secondCard = null;
 let lockBoard = false;
-let matches = 0;
 let attempts = 0;
-let totalMatches = 0;
+let matches = 0;
 let timer;
-let timeLeft = 90;
-let isFixedMode = false;
-let gameStarted = false;
+let timeLeft = 80;
+let gameEnded = false;
+let totalMatches = 0;
 
-// 🟢 시작 함수
-function startGame(fixed = false) {
-  isFixedMode = fixed;
-  gameStarted = true;
-  matches = 0;
-  attempts = 0;
-  timeLeft = 90;
-  updateScore();
+function shuffleCards(useFixed = false) {
+  const board = document.getElementById("game-board");
 
-  cards = fixed ? getFixedCards() : getRandomCards();
-  totalMatches = cards.length / 2;
+  const baseEmojis = useFixed ? emojis.slice(0, 4) : emojis.slice(0, 18);
+  const deck = [...baseEmojis, ...baseEmojis];
+  if (!useFixed) deck.sort(() => 0.5 - Math.random());
 
-  renderBoard();
-  document.getElementById("game-over").style.display = "none";
-  clearInterval(timer);
-  startTimer();
+  cards = deck;
+  totalMatches = baseEmojis.length;
+
+  renderBoard(useFixed);
+  resetScore();
+  resetTimer();
+  hideOverlay();
+
+  setTimeout(() => {
+    showAllCardsTemporarily(() => {
+      startTimer();
+    });
+  }, 100);
 }
 
-// 🟢 카드 셔플 (랜덤용)
-function getRandomCards() {
-  const selected = emojisPool.sort(() => 0.5 - Math.random()).slice(0, 6); // 6쌍
-  return shuffle([...selected, ...selected]);
-}
-
-// 🟢 고정 모드 카드
-function getFixedCards() {
-  const fixed = ["🍎", "🍌", "🍒", "🍉"]; // 4쌍
-  return [...fixed, ...fixed];
-}
-
-// 🟢 카드 섞기
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-// 🟢 보드 렌더
-function renderBoard() {
+function renderBoard(isFixed = false) {
   const board = document.getElementById("game-board");
   board.innerHTML = "";
 
-  board.className = isFixedMode ? "board-3x3" : "board-6x6";
+  board.classList.remove("board-6x6", "board-3x3");
+  board.classList.add(isFixed ? "board-3x3" : "board-6x6");
 
   cards.forEach((emoji, index) => {
     const card = document.createElement("div");
-    card.className = "card";
+    card.classList.add("card");
     card.dataset.emoji = emoji;
     card.dataset.index = index;
 
@@ -68,31 +53,23 @@ function renderBoard() {
         <div class="card-back">${emoji}</div>
       </div>
     `;
+
     card.addEventListener("click", flipCard);
     board.appendChild(card);
   });
-
-  // 🟢 4초 보여주기
-  document.querySelectorAll(".card").forEach(card => card.classList.add("flipped"));
-  setTimeout(() => {
-    document.querySelectorAll(".card").forEach(card => card.classList.remove("flipped"));
-  }, 4000);
 }
 
-// 🟢 카드 뒤집기
-function flipCard(e) {
-  if (lockBoard || !gameStarted) return;
-  const card = e.currentTarget;
-  if (card === firstCard || card.classList.contains("matched")) return;
+function flipCard() {
+  if (lockBoard || gameEnded || this.classList.contains("matched") || this === firstCard) return;
 
-  card.classList.add("flipped");
+  this.classList.add("flipped");
 
   if (!firstCard) {
-    firstCard = card;
+    firstCard = this;
     return;
   }
 
-  secondCard = card;
+  secondCard = this;
   attempts++;
   updateScore();
 
@@ -100,49 +77,96 @@ function flipCard(e) {
     firstCard.classList.add("matched");
     secondCard.classList.add("matched");
     matches++;
-    resetTurn();
     updateScore();
-    checkGameEnd();
+
+    if (matches === totalMatches) finishGame();
+    resetTurn();
   } else {
     lockBoard = true;
     setTimeout(() => {
       firstCard.classList.remove("flipped");
       secondCard.classList.remove("flipped");
       resetTurn();
-    }, 700);
+    }, 800);
   }
 }
 
-// 🟢 점수/턴수 업데이트
-function updateScore() {
-  document.getElementById("attempts").textContent = attempts;
-  document.getElementById("matches").textContent = matches;
-}
-
-// 🟢 게임 종료 확인
-function checkGameEnd() {
-  if (!gameStarted) return;
-  if (matches === totalMatches) {
-    clearInterval(timer);
-    document.getElementById("game-over").style.display = "block";
-  }
-}
-
-// 🟢 타이머 시작
-function startTimer() {
-  document.getElementById("time-left").textContent = timeLeft;
-  timer = setInterval(() => {
-    timeLeft--;
-    document.getElementById("time-left").textContent = timeLeft;
-    if (timeLeft === 0) {
-      clearInterval(timer);
-      document.getElementById("game-over").style.display = "block";
-    }
-  }, 1000);
-}
-
-// 🟢 턴 초기화
 function resetTurn() {
   [firstCard, secondCard] = [null, null];
   lockBoard = false;
 }
+
+function resetScore() {
+  attempts = 0;
+  matches = 0;
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById("attempts").textContent = attempts;
+  document.getElementById("matches").textContent = matches;
+  document.getElementById("timer").textContent = timeLeft;
+}
+
+function resetTimer() {
+  clearInterval(timer);
+  timeLeft = 80;
+  updateScore();
+}
+
+function startTimer() {
+  clearInterval(timer);
+  updateScore();
+
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById("timer").textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      finishGame();
+    }
+  }, 1000);
+}
+
+function finishGame() {
+  if (gameEnded) return;
+  gameEnded = true;
+  clearInterval(timer);
+  document.getElementById("overlay").classList.remove("hidden");
+}
+
+function hideOverlay() {
+  document.getElementById("overlay").classList.add("hidden");
+  gameEnded = false;
+}
+
+function showAllCardsTemporarily(callback) {
+  const allCards = document.querySelectorAll(".card");
+  allCards.forEach(card => card.classList.add("flipped"));
+  lockBoard = true;
+
+  setTimeout(() => {
+    allCards.forEach(card => card.classList.remove("flipped"));
+    lockBoard = false;
+    if (typeof callback === "function") callback();
+  }, 4000);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("shuffle-btn").addEventListener("click", () => {
+    shuffleCards();
+  });
+
+  document.getElementById("restart-btn").addEventListener("click", () => {
+    shuffleCards();
+  });
+
+  document.getElementById("shuffle-fixed-btn").addEventListener("click", () => {
+    shuffleCards(true);
+  });
+
+  document.getElementById("overlay-restart-btn").addEventListener("click", () => {
+    shuffleCards();
+  });
+});
