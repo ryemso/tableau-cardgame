@@ -1,3 +1,4 @@
+/**/
 const emojis = ['🍎', '🍌', '🍇', '🍓', '🍍', '🥝', '🍑', '🍉'];
 let shuffledCards = [];
 let firstCard, secondCard;
