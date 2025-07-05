@@ -34,9 +34,21 @@ function renderBoard(isFixed = false) {
       </div>
     `;
 
-    card.addEventListener("click", flipCard);
     board.appendChild(card);
   });
+
+  // ✅ 전체 카드 4초간 자동 공개 → 그 후 닫힘
+  setTimeout(() => {
+    document.querySelectorAll(".card").forEach(card => {
+      card.classList.add("flipped");
+    });
+    setTimeout(() => {
+      document.querySelectorAll(".card").forEach(card => {
+        card.classList.remove("flipped");
+        card.addEventListener("click", flipCard);
+      });
+    }, 4000);
+  }, 10); // 아주 짧은 딜레이로 렌더링 후 실행
 }
 
 function flipCard() {
@@ -114,11 +126,18 @@ function startGame() {
 }
 
 function startFixedGame() {
-  cards = shuffle([...FIXED_EMOJIS, ...FIXED_EMOJIS]); // 4쌍
-  totalMatches = cards.length / 2;
+  isFixedMode = true;
   matches = 0;
-  attempts = 0;
-  updateScore();
+  tries = 0;
+  timeLeft = 90;
+  gameOver = false;
+  gameOverMessage.style.display = "none";
+
+  const selected = EMOJIS.slice(0, 6); // 6쌍
+  cards = shuffle([...selected, ...selected]);
+  totalMatches = 6;
+
   renderBoard(true);
+  updateScore();
   startTimer();
 }
