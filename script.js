@@ -17,6 +17,9 @@ function shuffleCards(useFixed = false) {
 
   cards = deck;
   renderBoard();
+  board.classList.remove("board-6x6", "board-3x3");
+  board.classList.add(useFixed ? "board-3x3" : "board-6x6");
+  
   resetScore();
   resetTimer();
 
