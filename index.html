@@ -1,34 +1,30 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>게임 캐드 매칭</title>
-  <link rel="stylesheet" href="style.css" />
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>게임 캐드 매칭</title>
+ <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  <div class="container">
-    <h1>🍎 캐드 매칭 게임 🍉</h1>
-    <div class="stats">
-      <p id="attempts">시도: 0</p>
-      <p id="matches">/ 매칭: 0</p>
-      <p id="timeLeft">/ 남은 시간: 80</p>
-    </div>
-    <div class="controls">
-      <button onclick="startGame()">게임 시작</button>
-      <button onclick="startPresentationMode()">발표용 시작</button>
-      <button onclick="resetGame()">다시 시작</button>
-    </div>
-    <div id="game-board" class="game-board"></div>
-    <div id="game-end" class="game-end hidden">
-      🎉 게임 종료! 🎉<br />
-      <button onclick="resetGame()">다시 시작</button>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+ <div class="container">
+   <h1>🍎 캐드 매칭 게임 🍉</h1>
+   <div class="stats">
+     <p>시도: <span id="attempts">0</span></p>
+     <p>매칭: <span id="matches">0</span></p>
+     <p>남은 시간: <span id="timeLeft">80</span></p>
+   </div>
+   <div class="controls">
+     <button onclick="startGame()">게임 시작</button>
+     <button onclick="startPresentationMode()">발표용 시작</button>
+     <button onclick="resetGame()">다시 시작</button>
+   </div>
+   <div id="game-board" class="game-board"></div>
+   <div id="game-end" class="game-end hidden">
+     🎉 게임 종료! 🎉<br />
+     <button onclick="resetGame()">다시 시작</button>
+   </div>
+ </div>
+ <script src="script.js"></script>
 </body>
-
 </html>
