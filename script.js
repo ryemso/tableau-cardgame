@@ -34,7 +34,9 @@ function shuffleCards(useFixed = false) {
 function renderBoard(isFixed = false) {
   const board = document.getElementById("game-board");
   board.innerHTML = "";
-  board.className = isFixed ? "board board-3x3" : "board board-6x6";
+
+  board.classList.remove("board-6x6", "board-3x3");
+  board.classList.add(isFixed ? "board-3x3" : "board-6x6");
 
   cards.forEach((emoji, index) => {
     const card = document.createElement("div");
